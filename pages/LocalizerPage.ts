@@ -8,6 +8,8 @@ export class LocalizerPage implements Localizer {
     private readonly expandB2BBackoffice: Locator;
     private readonly trLocalizer: Locator;
     private readonly expandLocalizer: Locator;
+    private readonly trFoundation: Locator;
+    private readonly expandFoundation: Locator;
 
     private readonly inputObjectName: Locator;
     private readonly inputRussian: Locator;
@@ -27,10 +29,12 @@ export class LocalizerPage implements Localizer {
     constructor(page: Page) {
         this.page = page;
         
-        //this.trB2BBackoffice = page.getByRole('cell', { name: 'B2B Backoffice' }).locator('div').first();//--
+        this.trB2BBackoffice = page.getByRole('cell', { name: 'B2B Backoffice' });
         this.expandB2BBackoffice = page.getByRole('cell', { name: 'B2B Backoffice' }).locator('div').first();
         this.trLocalizer = page.locator('[id="\\31 _3"]').getByRole('cell', { name: 'Localizer' });
         this.expandLocalizer = page.getByRole('cell', { name: 'Localizer' }).locator('div').first();
+        this.trLocalizer = page.getByRole('cell', { name: 'Foundation' });
+        this.expandLocalizer = page.getByRole('cell', { name: 'Foundation' }).locator('div').first();
 
         this.inputObjectName = page.getByPlaceholder('Object name');
         this.inputRussian = page.getByLabel('Russian');
@@ -53,10 +57,13 @@ export class LocalizerPage implements Localizer {
             await this.page.goto(__Globals.applicationCreateUrl());
         }
     }*/
-async goto(pageUrl?: string) {
+async goto() {
     await this.page.goto('https://admin-panel.preprod.idynsys.org/localizer/localizer');
 }
 
+async click_B2BBackoffice(){
+    await this.trB2BBackoffice.click();
+}
 async click_expandB2BBackoffice (){
     await this.expandB2BBackoffice.click();
 }
@@ -64,6 +71,12 @@ async click_expandLocalizer (){
     await this.expandLocalizer.click();
 }
 async click_trLocalizer(){
+    await this.trLocalizer.click();
+}
+async click_expandFoundation (){
+    await this.expandLocalizer.click();
+}
+async click_trFoundation(){
     await this.trLocalizer.click();
 }
 
@@ -82,7 +95,6 @@ async fill_inputEnglish(value){
 async click_buttonSave(){
     await this.buttonSave.click();
 }
-
 async click_buttonExport (){
     await this.buttonExport.click();
 }
@@ -105,7 +117,7 @@ async click_buttonDelete (){
     await this.buttonDelete.click();
 }   
 
-async createTestFolderTestKeyInB2BBackofficeLocalizer(folder_name, key_name, key_nameRU, key_nameEN){
+async createFolderwithKeyInB2BBackofficeLocalizer(folder_name, key_name, key_nameRU, key_nameEN){
     await this.click_expandB2BBackoffice();
     await this.click_expandLocalizer();
     await this.click_trLocalizer();
@@ -119,5 +131,26 @@ async createTestFolderTestKeyInB2BBackofficeLocalizer(folder_name, key_name, key
     await this.fill_inputEnglish(key_nameEN);
     await this.click_buttonSave();
     await this.page.getByRole('cell', { name: folder_name }).locator('div').first().click();
-}
+    }
+
+async createTwoFolderwithKeyInB2BBackofficeLocalizer(folder_name, key_name, key_nameRU, key_nameEN){
+    await this.createFolderwithKeyInB2BBackofficeLocalizer(folder_name, key_name, key_nameRU, key_nameEN)
+    await this.click_trLocalizer();
+    await this.click_buttonCreate();
+    await this.fill_inputObjectName(folder_name+'(2)');
+    await this.click_buttonSave();
+    await this.page.getByRole('cell', { name: folder_name+'(2)' }).click();
+    await this.click_buttonCreate();
+    await this.fill_inputObjectName(key_name+'(2)');
+    await this.fill_inputRussian(key_nameRU+'(2)');
+    await this.fill_inputEnglish(key_nameEN+'(2)');
+    await this.click_buttonSave();
+    }
+
+
+
+async deleteFolder(folder_name){
+    await this.page.getByRole('cell', { name: folder_name }).click();
+    await this.click_buttonDelete();
+}  
 }

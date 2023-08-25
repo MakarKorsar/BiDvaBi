@@ -1,12 +1,10 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 import { LocalizerPage } from '../pages/LocalizerPage';
-
-var url_localizer = 'https://admin-panel.preprod.idynsys.org/localizer/localizer';
-
+import { Creds } from '../pages/Creds';
 
 const visible_timeout = 30*1000;
-// нужно уникальное число для теста бла бла бла 
+// нужно уникальное число для теста
 const currentDate = new Date();
 const day = currentDate.getDate().toString().padStart(2, '0');
 const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
@@ -22,9 +20,9 @@ test('Create_key', async ({ page }) => {
   const loginPage = new LoginPage (page);
   const localizerPage = new LocalizerPage(page);
 
-  await page.goto(url_localizer);
+  await localizerPage.goto();
   await expect(page).toHaveTitle(/B2B/);
-  await loginPage.autorizationByEmailPassword('admin@test.com','123456');
+  await loginPage.autorizationByEmailPassword(Creds.Email,Creds.Password);
 
   await localizerPage.click_expandB2BBackoffice();
   await localizerPage.click_expandLocalizer();
@@ -49,9 +47,9 @@ test('Create_key', async ({ page }) => {
 test('Edit_key', async ({ page }) => {
   const loginPage = new LoginPage (page);
   const localizerPage = new LocalizerPage (page);
-  await page.goto(url_localizer);
+  await localizerPage.goto();
   await expect(page).toHaveTitle(/B2B/);
-  await loginPage.autorizationByEmailPassword('admin@test.com','123456');
+  await loginPage.autorizationByEmailPassword(Creds.Email,Creds.Password);
 
 
   await localizerPage.click_expandB2BBackoffice();
@@ -68,9 +66,9 @@ test('Edit_key', async ({ page }) => {
 test('Delete_key', async ({ page }) => {
   const loginPage = new LoginPage (page);
   const localizerPage = new LocalizerPage (page);
-  await page.goto(url_localizer);
+  await localizerPage.goto();
   await expect(page).toHaveTitle(/B2B/);
-  await loginPage.autorizationByEmailPassword('admin@test.com','123456');
+  await loginPage.autorizationByEmailPassword(Creds.Email,Creds.Password);
 
   await localizerPage.click_expandB2BBackoffice();
   await localizerPage.click_expandLocalizer();
